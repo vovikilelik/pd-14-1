@@ -1,4 +1,7 @@
 class DatabaseApi:
+    """
+    Представление для API базы данных. Используется для отладки.
+    """
 
     def __init__(self, cursor):
         self._cursor = cursor

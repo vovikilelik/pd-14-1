@@ -63,7 +63,10 @@ def genre_view(genre):
 
 def main():
     with NetflixWorker(DATABASE_PATH) as worker:
+        # Шаг 5
         print(worker.get_actor_pair_list('Rose McIver', 'Ben Lamb'))
+
+        # Шаг 6
         print(worker.search('Movie', 2010, 'Horror'))
 
     app.run(debug=True)

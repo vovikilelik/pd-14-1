@@ -6,6 +6,9 @@ def get_or_bound(text_or_condition):
 
 
 class Condition:
+    """
+    Агрегатор условных выражений
+    """
 
     def __init__(self, *operands, operator='AND'):
         self._operands = operands

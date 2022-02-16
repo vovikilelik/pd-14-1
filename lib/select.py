@@ -10,6 +10,9 @@ BODY_ORDER = [BODY_SELECT, BODY_FROM, BODY_WHERE, BODY_ORDER_BY, BODY_LIMIT, BOD
 
 
 class Select:
+    """
+    Агрегатор SQL запросов
+    """
 
     def __init__(self, *fields):
         joined_fields = ', '.join(fields) if len(fields) > 0 else '*'

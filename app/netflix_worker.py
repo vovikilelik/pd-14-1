@@ -29,6 +29,9 @@ def map_row(raw_row):
 
 
 class NetflixWorker:
+    """
+    Агрегатор запросов к БД netflix
+    """
 
     def __init__(self, _database_path):
         self._database_path = _database_path
@@ -52,18 +55,27 @@ class NetflixWorker:
         self._connection.close()
 
     def get_by_id(self, show_id):
+        """
+        Возвращает полную запись по указанному show_id
+        """
         response = self._api.get_by_id(f"'{show_id}'", *FULL_ENTITY_FIELDS)
         row = response.fetchone()
 
         return map_row(row)
 
     def get_by_title(self, title_text):
+        """
+        Возвращает самую свежую, с точностью до года, полную запись
+        """
         response = self._api.get_by_title(title=title_text)
         row = response.fetchone()
 
         return self.get_by_id(row[ID_FIELD_NAME])
 
     def get_between_list(self, field, left, right, offset=None, limit=None):
+        """
+        Возвращает сокращённый список между двумя датами
+        """
         response = self._api.get_between(
             field,
             left,
@@ -76,6 +88,9 @@ class NetflixWorker:
         return [map_row(row) for row in response.fetchall()]
 
     def get_rating_list(self, rating, offset=None, limit=None):
+        """
+        Возвращает сокращённый список по рейтингу
+        """
         response = self._api.get_by_rating(
             rating,
             offset=offset,
@@ -86,6 +101,9 @@ class NetflixWorker:
         return [map_row(row) for row in response.fetchall()]
 
     def get_genre_list(self, genre, offset=None, limit=None):
+        """
+        Возвращает сокращённый список по жанру
+        """
         response = self._api.get_by_genre(
             genre,
             offset=offset,
@@ -96,6 +114,9 @@ class NetflixWorker:
         return [map_row(row) for row in response.fetchall()]
 
     def get_actor_pair_list(self, origin, friend):
+        """
+        Возвращает список актёров, которые были в паре с переданными в аргументах, больше 2-х раз
+        """
         response = self._api.search_by_text(
             **{'"cast"': [origin, friend]}
         )
@@ -115,6 +136,10 @@ class NetflixWorker:
         return [actor for actor, count in times_count.items() if count > 2]
 
     def search(self, movie_type, release_year, genre):
+        """
+        Совершает поиск по типу, году и жанру.
+        Возвращает сокращённый список.
+        """
         response = self._api.search_by_text(
             type=movie_type,
             release_year=release_year,

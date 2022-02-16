@@ -7,6 +7,9 @@ MIN_ENTITY_FIELDS = (ID_FIELD_NAME, 'title')
 
 
 class NetflixApi(DatabaseApi):
+    """
+    API для БД netflix
+    """
 
     def netflix_select(self, select, offset=None, sort=None, limit=None):
         query = select\
@@ -19,6 +22,10 @@ class NetflixApi(DatabaseApi):
         return self.execute(query)
 
     def search_by_field(self, offset=None, limit=None, sort=None, **fields):
+        """
+        Совершает запрос к БД по условию для неопределённого числа полей.
+        Переданные поля будут включены в запрос.
+        """
         not_none_list = [value for key, value in fields.items() if value]
 
         select = Select(*{*MIN_ENTITY_FIELDS, *fields.keys()})\
@@ -27,6 +34,9 @@ class NetflixApi(DatabaseApi):
         return self.netflix_select(select, offset=offset, limit=limit, sort=sort)
 
     def get_by_field(self, name, values, offset=None, limit=None, sort=None, query_fields=MIN_ENTITY_FIELDS):
+        """
+        Оборачивает search_by_field() и осуществляет строгое сравнение по полям.
+        """
         rating_condition = [f"{name}='{v}'" for v in values]
 
         return self.search_by_field(
@@ -38,6 +48,9 @@ class NetflixApi(DatabaseApi):
         )
 
     def search_by_text(self, offset=None, limit=None, sort=None, **fields):
+        """
+        Совершает поиск по полям с не строгим соответствием.
+        """
         field_conditions = {}
         for key, value in fields.items():
             if not value:
